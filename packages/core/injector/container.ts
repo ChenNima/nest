@@ -21,6 +21,7 @@ import { Module } from './module';
 import { ModuleTokenFactory } from './module-token-factory';
 import { ModulesContainer } from './modules-container';
 
+/* It's a container for all the modules in the application */
 export class NestContainer {
   private readonly globalModules = new Set<Module>();
   private readonly moduleTokenFactory = new ModuleTokenFactory();
@@ -64,6 +65,13 @@ export class NestContainer {
     return this.internalProvidersStorage.httpAdapterHost;
   }
 
+  /**
+   * It takes a module, and adds it to the list of modules
+   * @param {Type<any> | DynamicModule | Promise<DynamicModule>} metatype - Type<any> | DynamicModule |
+   * Promise<DynamicModule>
+   * @param {Type<any>[]} scope - Type<any>[]
+   * @returns A moduleRef object
+   */
   public async addModule(
     metatype: Type<any> | DynamicModule | Promise<DynamicModule>,
     scope: Type<any>[],
@@ -94,6 +102,12 @@ export class NestContainer {
     return moduleRef;
   }
 
+  /**
+   * It adds the dynamic module metadata to the `dynamicModulesMetadata` map
+   * @param {string} token - The token of the module to be added.
+   * @param dynamicModuleMetadata - This is the metadata that we're adding to the dynamic module.
+   * @param {Type<any>[]} scope - Type<any>[]
+   */
   public async addDynamicMetadata(
     token: string,
     dynamicModuleMetadata: Partial<DynamicModule>,
@@ -145,6 +159,12 @@ export class NestContainer {
     return this.internalCoreModule;
   }
 
+  /**
+   * It adds a module to the list of modules that the module with the given token depends on
+   * @param {Type<any> | DynamicModule} relatedModule - Type<any> | DynamicModule
+   * @param {string} token - The token of the module you want to add the import to.
+   * @returns A module reference
+   */
   public async addImport(
     relatedModule: Type<any> | DynamicModule,
     token: string,
@@ -230,9 +250,16 @@ export class NestContainer {
   }
 
   public getDynamicMetadataByToken(token: string): Partial<DynamicModule>;
+  /* It's a way to get the metadata of a module. */
   public getDynamicMetadataByToken<
     K extends Exclude<keyof DynamicModule, 'global' | 'module'>,
   >(token: string, metadataKey: K): DynamicModule[K];
+  /**
+   * It returns the metadata of a dynamic module by its token
+   * @param {string} token - The token of the module you want to get the metadata from.
+   * @param [metadataKey] - This is the key of the metadata you want to get.
+   * @returns The metadata for the module with the given token.
+   */
   public getDynamicMetadataByToken(
     token: string,
     metadataKey?: Exclude<keyof DynamicModule, 'global' | 'module'>,

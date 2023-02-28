@@ -11,6 +11,7 @@ export interface ModuleFactory {
   dynamicMetadata?: Partial<DynamicModule>;
 }
 
+/* It takes a module and returns a module factory */
 export class ModuleCompiler {
   constructor(private readonly moduleTokenFactory = new ModuleTokenFactory()) {}
 
@@ -22,6 +23,16 @@ export class ModuleCompiler {
     return { type, dynamicMetadata, token };
   }
 
+  /**
+   * It takes a metatype and returns a type and dynamicMetadata
+   * @param {Type<any> | ForwardReference | DynamicModule} metatype - Type<any> | ForwardReference |
+   * DynamicModule
+   * @returns {
+   *     type: (metatype as ForwardReference)?.forwardRef
+   *       ? (metatype as ForwardReference).forwardRef()
+   *       : metatype,
+   *   }
+   */
   public extractMetadata(
     metatype: Type<any> | ForwardReference | DynamicModule,
   ): {

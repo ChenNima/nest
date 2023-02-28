@@ -75,6 +75,7 @@ export interface InjectorDependencyContext {
   dependencies?: InjectorDependency[];
 }
 
+/* It's a class that loads and instantiates classes */
 export class Injector {
   private logger: LoggerService = new Logger('InjectorLogger');
 

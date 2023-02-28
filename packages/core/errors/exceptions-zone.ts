@@ -3,6 +3,8 @@ import { ExceptionHandler } from './exception-handler';
 
 const DEFAULT_TEARDOWN = () => process.exit(1);
 
+/* It's a wrapper around the `try/catch` block that allows you to run a function and handle any
+exceptions that occur */
 export class ExceptionsZone {
   private static readonly exceptionHandler = new ExceptionHandler();
 

@@ -10,6 +10,10 @@ import { GlobalPrefixOptions } from '@nestjs/common/interfaces';
 import { InstanceWrapper } from './injector/instance-wrapper';
 import { ExcludeRouteMetadata } from './router/interfaces/exclude-route-metadata.interface';
 
+/**
+ * 注册所有的Nest App全局配置，包括pipe，filter等
+ * It's a container for all the global configuration options
+ */
 export class ApplicationConfig {
   private globalPrefix = '';
   private globalPrefixOptions: GlobalPrefixOptions<ExcludeRouteMetadata> = {};

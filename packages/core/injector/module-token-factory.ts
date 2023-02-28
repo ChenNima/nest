@@ -8,6 +8,7 @@ import stringify from 'fast-safe-stringify';
 const CLASS_STR = 'class ';
 const CLASS_STR_LEN = CLASS_STR.length;
 
+/* It creates a unique token for each module */
 export class ModuleTokenFactory {
   private readonly moduleTokenCache = new Map<string, string>();
   private readonly moduleIdsCache = new WeakMap<Type<unknown>, string>();

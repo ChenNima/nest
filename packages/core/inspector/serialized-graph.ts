@@ -20,6 +20,7 @@ import { Node } from './interfaces/node.interface';
 type WithOptionalId<T extends Record<'id', string>> = Omit<T, 'id'> &
   Partial<Pick<T, 'id'>>;
 
+/* It's a data structure that holds the graph of the application */
 export class SerializedGraph {
   private readonly nodes = new Map<string, Node>();
   private readonly edges = new Map<string, Edge>();
