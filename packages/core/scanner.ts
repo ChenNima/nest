@@ -61,6 +61,7 @@ interface ApplicationProviderWrapper {
   scope?: Scope;
 }
 
+/* It scans the application for modules, imports, providers, controllers, exports, and injectables */
 export class DependenciesScanner {
   private readonly applicationProvidersApplyMap: ApplicationProviderWrapper[] =
     [];
@@ -72,6 +73,11 @@ export class DependenciesScanner {
     private readonly applicationConfig = new ApplicationConfig(),
   ) {}
 
+  /**
+   * It registers the core module, scans for modules, scans for dependencies, calculates the distance
+   * between modules, and adds scoped enhancers metadata
+   * @param module - Type<any>
+   */
   public async scan(module: Type<any>) {
     await this.registerCoreModule();
     await this.scanForModules(module);
@@ -82,6 +88,17 @@ export class DependenciesScanner {
     this.container.bindGlobalScope();
   }
 
+  /**
+   * It takes a module definition, and returns an array of modules
+   * @param {| ForwardReference
+   *       | Type<unknown>
+   *       | DynamicModule
+   *       | Promise<DynamicModule>} moduleDefinition - The module that we want to scan for imports.
+   * @param {Type<unknown>[]} scope - Type<unknown>[] = [],
+   * @param {(ForwardReference | DynamicModule | Type<unknown>)[]} ctxRegistry - (ForwardReference |
+   * DynamicModule | Type<unknown>)[] = [],
+   * @returns An array of modules.
+   */
   public async scanForModules(
     moduleDefinition:
       | ForwardReference
@@ -141,6 +158,12 @@ export class DependenciesScanner {
     return [moduleInstance].concat(registeredModuleRefs);
   }
 
+  /**
+   * It takes a module definition and a scope, and returns a promise of a module or undefined
+   * @param {any} moduleDefinition - any
+   * @param {Type<unknown>[]} scope - Type<unknown>[]
+   * @returns A promise of a module or undefined
+   */
   public async insertModule(
     moduleDefinition: any,
     scope: Type<unknown>[],
@@ -160,6 +183,18 @@ export class DependenciesScanner {
     return this.container.addModule(moduleToAdd, scope);
   }
 
+  /**
+   * It loops through all the modules in the container and for each module it calls the following
+   * functions:
+   *
+   * - reflectImports
+   * - reflectProviders
+   * - reflectControllers
+   * - reflectExports
+   *
+   * Let's take a look at each of these functions
+   * @param modules - Map<string, Module> = this.container.getModules()
+   */
   public async scanModulesForDependencies(
     modules: Map<string, Module> = this.container.getModules(),
   ) {
@@ -171,6 +206,12 @@ export class DependenciesScanner {
     }
   }
 
+  /**
+   * It gets the imports from the module and then calls the insertImport function for each of them
+   * @param module - The module class
+   * @param {string} token - The token of the module to be imported.
+   * @param {string} context - The context of the module.
+   */
   public async reflectImports(
     module: Type<unknown>,
     token: string,
@@ -188,6 +229,12 @@ export class DependenciesScanner {
     }
   }
 
+  /**
+   * It takes a module and a token, and then it gets all the providers from the module and the dynamic
+   * metadata, and then it inserts them into the container and reflects the dynamic metadata
+   * @param module - Type<any>
+   * @param {string} token - The token of the module.
+   */
   public reflectProviders(module: Type<any>, token: string) {
     const providers = [
       ...this.reflectMetadata(MODULE_METADATA.PROVIDERS, module),
@@ -202,6 +249,13 @@ export class DependenciesScanner {
     });
   }
 
+  /**
+   * It takes a module and a token and then it gets all the controllers from the module and the dynamic
+   * metadata and then it inserts the controllers into the module and then it reflects the dynamic
+   * metadata
+   * @param module - Type<any>
+   * @param {string} token - The token of the module
+   */
   public reflectControllers(module: Type<any>, token: string) {
     const controllers = [
       ...this.reflectMetadata(MODULE_METADATA.CONTROLLERS, module),
@@ -216,6 +270,13 @@ export class DependenciesScanner {
     });
   }
 
+  /**
+   * It looks for the metadata of the class and its prototype, and if it finds any, it adds it to the
+   * `moduleRef`'s `injectables` property
+   * @param cls - Type<Injectable>
+   * @param {string} token - The name of the class
+   * @returns The metadata for the class.
+   */
   public reflectDynamicMetadata(cls: Type<Injectable>, token: string) {
     if (!cls || !cls.prototype) {
       return;
@@ -227,6 +288,12 @@ export class DependenciesScanner {
     this.reflectParamInjectables(cls, token, ROUTE_ARGS_METADATA);
   }
 
+  /**
+   * It takes a module and a token, and then it gets the exports from the module and the dynamic
+   * metadata, and then it inserts the exported providers into the module
+   * @param module - Type<unknown>
+   * @param {string} token - The token of the module.
+   */
   public reflectExports(module: Type<unknown>, token: string) {
     const exports = [
       ...this.reflectMetadata(MODULE_METADATA.EXPORTS, module),
@@ -375,6 +442,14 @@ export class DependenciesScanner {
     calculateDistance(rootModule);
   }
 
+  /**
+   * If the related object is undefined, throw an exception. If the related object is a forward
+   * reference, add it to the container. Otherwise, add the related object to the container
+   * @param {any} related - The related class that we're importing.
+   * @param {string} token - The token that is being imported.
+   * @param {string} context - The name of the class that is being injected.
+   * @returns The container.addImport method is being returned.
+   */
   public async insertImport(related: any, token: string, context: string) {
     if (isUndefined(related)) {
       throw new CircularDependencyException(context);
@@ -395,6 +470,12 @@ export class DependenciesScanner {
     return provider && !isNil((provider as any).provide);
   }
 
+  /**
+   * It adds a provider to the container, but if the provider is a custom provider, it adds it to the
+   * applicationProvidersApplyMap instead
+   * @param {Provider} provider - Provider
+   * @param {string} token - The module key.
+   */
   public insertProvider(provider: Provider, token: string) {
     const isCustomProvider = this.isCustomProvider(provider);
     if (!isCustomProvider) {
@@ -503,6 +584,9 @@ export class DependenciesScanner {
     return Reflect.getMetadata(metadataKey, metatype) || [];
   }
 
+  /**
+   * It creates a new instance of the internal core module, and then registers it in the container
+   */
   public async registerCoreModule() {
     const moduleDefinition = InternalCoreModuleFactory.create(
       this.container,

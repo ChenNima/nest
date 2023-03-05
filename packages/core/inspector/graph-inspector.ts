@@ -8,6 +8,7 @@ import { OrphanedEnhancerDefinition } from './interfaces/extras.interface';
 import { ClassNode, Node } from './interfaces/node.interface';
 import { SerializedGraph } from './serialized-graph';
 
+/* It's responsible for inserting nodes and edges into the graph */
 export class GraphInspector {
   private readonly graph: SerializedGraph;
   private readonly enhancersMetadataCache =
@@ -17,6 +18,11 @@ export class GraphInspector {
     this.graph = container.serializedGraph;
   }
 
+  /**
+   * For each module, insert a node for the module, insert a node for each class in the module, and
+   * insert an edge between the module and each class
+   * @param modules - Map<string, Module> = this.container.getModules(),
+   */
   public inspectModules(
     modules: Map<string, Module> = this.container.getModules(),
   ) {

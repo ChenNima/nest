@@ -66,6 +66,14 @@ export class NestFactoryStatic {
     httpAdapter: AbstractHttpAdapter,
     options?: NestApplicationOptions,
   ): Promise<T>;
+  /**
+   * It creates a NestApplication instance.
+   * @param {any} moduleCls - The module class that you want to bootstrap.
+   * @param {AbstractHttpAdapter | NestApplicationOptions} [serverOrOptions] - This is the server that
+   * the application will run on. It can be an instance of the HTTP server or an options object.
+   * @param {NestApplicationOptions} [options] - NestApplicationOptions
+   * @returns A NestApplication instance
+   */
   public async create<T extends INestApplication = INestApplication>(
     moduleCls: any,
     serverOrOptions?: AbstractHttpAdapter | NestApplicationOptions,
@@ -188,6 +196,17 @@ export class NestFactoryStatic {
     return this.createProxy(instance);
   }
 
+  /**
+   * It creates a new Injector, InstanceLoader, MetadataScanner, and DependenciesScanner, and then
+   * calls scan on the DependenciesScanner, and then calls createInstancesOfDependencies on the
+   * InstanceLoader
+   * @param {any} module - The root module of your application.
+   * @param {NestContainer} container - NestContainer
+   * @param {GraphInspector} graphInspector - GraphInspector
+   * @param config - ApplicationConfig
+   * @param {NestApplicationContextOptions} options - NestApplicationContextOptions = {}
+   * @param {HttpServer} [httpServer=null] - HttpServer = null,
+   */
   private async initialize(
     module: any,
     container: NestContainer,
@@ -277,6 +296,15 @@ export class NestFactoryStatic {
     };
   }
 
+  /**
+   * If the user has provided a logger, override the default logger with the user's logger. If the user
+   * has requested buffering of logs, attach a buffer to the logger. If the user has not specified
+   * whether to auto-flush logs, set auto-flush to true
+   * @param {NestApplicationContextOptions | undefined} options - NestApplicationContextOptions |
+   * undefined
+   * @returns this.autoFlushLogs = autoFlushLogs ?? true;
+   *   return this.autoFlushLogs;
+   */
   private registerLoggerConfiguration(
     options: NestApplicationContextOptions | undefined,
   ) {
@@ -348,6 +376,13 @@ export class NestFactoryStatic {
     return proxy as unknown as T;
   }
 
+  /**
+   * If the appOptions object has a snapshot property, then create a new GraphInspector object and pass
+   * in the container object. Otherwise, return the NoopGraphInspector object
+   * @param {NestApplicationContextOptions} appOptions - NestApplicationContextOptions
+   * @param {NestContainer} container - NestContainer
+   * @returns A new GraphInspector or a NoopGraphInspector
+   */
   private createGraphInspector(
     appOptions: NestApplicationContextOptions,
     container: NestContainer,

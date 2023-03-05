@@ -45,6 +45,8 @@ import { ModuleRef, ModuleRefGetOrResolveOpts } from './module-ref';
  */
 export type InstanceToken = InjectionToken;
 
+/* It's a container for all the providers, controllers, and other modules that are imported by the
+module */
 export class Module {
   private readonly _id: string;
   private readonly _imports = new Set<Module>();
@@ -183,12 +185,18 @@ export class Module {
     this._distance = value;
   }
 
+  /**
+   * It adds the module as a provider, the module reference, and the application configuration
+   */
   public addCoreProviders() {
     this.addModuleAsProvider();
     this.addModuleRef();
     this.addApplicationConfig();
   }
 
+  /**
+   * It creates a new instance of the ModuleRef class and adds it to the _providers map
+   */
   public addModuleRef() {
     const moduleRef = this.createModuleReferenceType();
     this._providers.set(
@@ -204,6 +212,9 @@ export class Module {
     );
   }
 
+  /**
+   * It adds the module as a provider to the providers map
+   */
   public addModuleAsProvider() {
     this._providers.set(
       this._metatype,
@@ -218,6 +229,9 @@ export class Module {
     );
   }
 
+  /**
+   * It adds an instance of the ApplicationConfig class to the providers map
+   */
   public addApplicationConfig() {
     this._providers.set(
       ApplicationConfig,
