@@ -8,7 +8,8 @@ import { OrphanedEnhancerDefinition } from './interfaces/extras.interface';
 import { ClassNode, Node } from './interfaces/node.interface';
 import { SerializedGraph } from './serialized-graph';
 
-/* It's responsible for inserting nodes and edges into the graph */
+/* It takes a NestContainer and a SerializedGraph, and it inspects the NestContainer and inserts nodes
+and edges into the SerializedGraph */
 export class GraphInspector {
   private readonly graph: SerializedGraph;
   private readonly enhancersMetadataCache =
@@ -39,10 +40,18 @@ export class GraphInspector {
     DeterministicUuidRegistry.clear();
   }
 
+  /**
+   * It takes an instance wrapper and a module reference, and then it inspects the instance wrapper's
+   * constructor metadata and properties metadata, and for each of those, it inserts a class to class
+   * edge
+   * @param source - InstanceWrapper<T>
+   * @param {Module} moduleRef - The module that the class is in
+   */
   public inspectInstanceWrapper<T = any>(
     source: InstanceWrapper<T>,
     moduleRef: Module,
   ) {
+    // 获取依赖关系
     const ctorMetadata = source.getCtorMetadata();
     ctorMetadata?.forEach((target, index) =>
       this.insertClassToClassEdge(

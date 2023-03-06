@@ -35,6 +35,8 @@ export interface ExternalContextOptions {
   filters?: boolean;
 }
 
+/* It creates a function that can be called with a set of arguments, and it will call the original
+function with the arguments after applying pipes, guards, and interceptors */
 export class ExternalContextCreator {
   private readonly contextUtils = new ContextUtils();
   private readonly externalErrorProxy = new ExternalErrorProxy();

@@ -5,6 +5,7 @@ import {
   isNil,
 } from '@nestjs/common/utils/shared.utils';
 
+/* It scans the prototype chain of an object and returns all the method names */
 export class MetadataScanner {
   private readonly cachedScannedPrototypes: Map<object, string[]> = new Map();
 
@@ -68,6 +69,11 @@ export class MetadataScanner {
     yield* this.getAllMethodNames(prototype);
   }
 
+  /**
+   * It returns an array of all the method names of a given object
+   * @param {object | null} prototype - object | null
+   * @returns An array of strings.
+   */
   public getAllMethodNames(prototype: object | null): string[] {
     if (!prototype) {
       return [];

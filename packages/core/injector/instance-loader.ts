@@ -8,6 +8,7 @@ import { Injector } from './injector';
 import { InternalCoreModule } from './internal-core-module/internal-core-module';
 import { Module } from './module';
 
+/* It creates instances of all the providers, injectables, and controllers in the application */
 export class InstanceLoader<TInjector extends Injector = Injector> {
   constructor(
     protected readonly container: NestContainer,

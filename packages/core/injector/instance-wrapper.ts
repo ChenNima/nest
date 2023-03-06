@@ -56,6 +56,7 @@ interface InstanceMetadataStore {
   enhancers?: InstanceWrapper[];
 }
 
+/* It's a wrapper around a value, which can be a class, a factory, or a value */
 export class InstanceWrapper<T = any> {
   public readonly name: any;
   public readonly token: InstanceToken;

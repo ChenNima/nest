@@ -100,6 +100,16 @@ export class Injector {
     }
   }
 
+  /**
+   * It takes a wrapper, a collection, a moduleRef, a contextId, and an inquirer, and returns a promise
+   * that resolves when the wrapper is loaded
+   * @param wrapper - InstanceWrapper<T>
+   * @param collection - Map<InstanceToken, InstanceWrapper>
+   * @param {Module} moduleRef - The module that the instance belongs to.
+   * @param contextId - The contextId is the unique identifier for the current context.
+   * @param {InstanceWrapper} [inquirer] - The inquirer is the class that is requesting the instance.
+   * @returns A promise that resolves when the instance is loaded.
+   */
   public async loadInstance<T>(
     wrapper: InstanceWrapper<T>,
     collection: Map<InstanceToken, InstanceWrapper>,
@@ -764,6 +774,13 @@ export class Injector {
     return host && (host.instance as T);
   }
 
+  /**
+   * It loads all the enhancers for a given context
+   * @param {InstanceWrapper} wrapper - InstanceWrapper - The wrapper of the instance that is being
+   * loaded
+   * @param {ContextId} ctx - ContextId - this is the context id of the module that is being loaded.
+   * @param {InstanceWrapper} [inquirer] - The instance that is being enhanced.
+   */
   public async loadEnhancersPerContext(
     wrapper: InstanceWrapper,
     ctx: ContextId,

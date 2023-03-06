@@ -625,6 +625,10 @@ export class DependenciesScanner {
       });
   }
 
+  /**
+   * It iterates over the `applicationProvidersApplyMap` and calls the appropriate `applyProvidersMap`
+   * or `applyRequestProvidersMap` function based on the `scope` of the provider
+   */
   public applyApplicationProviders() {
     const applyProvidersMap = this.getApplyProvidersMap();
     const applyRequestProvidersMap = this.getApplyRequestProvidersMap();

@@ -8,6 +8,7 @@ import { ModuleRef } from '../module-ref';
 import { ModulesContainer } from '../modules-container';
 import { LazyModuleLoaderLoadOptions } from './lazy-module-loader-options.interface';
 
+/* It loads a module and its dependencies */
 export class LazyModuleLoader {
   constructor(
     private readonly dependenciesScanner: DependenciesScanner,

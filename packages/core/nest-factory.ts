@@ -82,9 +82,11 @@ export class NestFactoryStatic {
     const [httpServer, appOptions] = this.isHttpServer(serverOrOptions)
       ? [serverOrOptions, options]
       : [this.createHttpAdapter(), serverOrOptions];
-
+    // 初始化applicationConfig，成员为包括globalPipes，globalFilters，globalInterceptors等等的全局配置
     const applicationConfig = new ApplicationConfig();
+    // 初始化依赖注入容器，成员包括globalModules，modules，以及一些工具比如moduleCompiler，moduleTokenFactory
     const container = new NestContainer(applicationConfig);
+    // 根据模块之间的依赖关系，生成依赖图的工具
     const graphInspector = this.createGraphInspector(appOptions, container);
 
     this.setAbortOnError(serverOrOptions, options);
@@ -219,6 +221,7 @@ export class NestFactoryStatic {
       ? UuidFactoryMode.Deterministic
       : UuidFactoryMode.Random;
 
+    // 注入工具
     const injector = new Injector({ preview: options.preview });
     const instanceLoader = new InstanceLoader(
       container,
