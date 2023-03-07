@@ -416,6 +416,9 @@ export class DependenciesScanner {
     return undefined;
   }
 
+  /**
+   * > It calculates the distance of each module from the root module
+   */
   public calculateModulesDistance() {
     const modulesGenerator = this.container.getModules().values();
 
@@ -423,6 +426,14 @@ export class DependenciesScanner {
     modulesGenerator.next();
 
     const modulesStack = [];
+    /**
+     * It takes a module reference and a distance value, and then it sets the distance of the module
+     * reference to the distance value, and then it sets the distance of all the modules that the
+     * module reference imports to the distance value plus one
+     * @param {Module} moduleRef - Module - The module to calculate the distance from.
+     * @param [distance=1] - The distance of the module from the root module.
+     * @returns the distance of the module from the root module.
+     */
     const calculateDistance = (moduleRef: Module, distance = 1) => {
       if (!moduleRef || modulesStack.includes(moduleRef)) {
         return;
@@ -531,6 +542,16 @@ export class DependenciesScanner {
     this.container.addProvider(newProvider, token, enhancerSubtype);
   }
 
+  /**
+   * It inserts an injectable into the container, and then inserts the injectable into the graph
+   * inspector
+   * @param {Type<Injectable> | object} injectable - The injectable class or object
+   * @param {string} token - The token of the module that the injectable is being inserted into.
+   * @param host - The class that is being decorated
+   * @param {EnhancerSubtype} subtype - EnhancerSubtype
+   * @param {string} [methodKey] - The name of the method that the decorator is applied to.
+   * @returns The instanceWrapper is being returned.
+   */
   public insertInjectable(
     injectable: Type<Injectable> | object,
     token: string,
@@ -668,6 +689,11 @@ export class DependenciesScanner {
     );
   }
 
+  /**
+   * It returns an object that maps the string keys to the functions that add the corresponding
+   * provider to the application config
+   * @returns A map of the different types of providers that can be applied globally.
+   */
   public getApplyProvidersMap(): { [type: string]: Function } {
     return {
       [APP_INTERCEPTOR]: (interceptor: NestInterceptor) =>

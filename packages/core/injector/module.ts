@@ -245,6 +245,13 @@ export class Module {
     );
   }
 
+  /**
+   * It adds an injectable to the module's injectables collection
+   * @param {Provider} injectable - The class that is being added to the container.
+   * @param {EnhancerSubtype} enhancerSubtype - EnhancerSubtype
+   * @param [host] - Type<T>
+   * @returns The instanceWrapper
+   */
   public addInjectable<T extends Injectable>(
     injectable: Provider,
     enhancerSubtype: EnhancerSubtype,
@@ -478,6 +485,10 @@ export class Module {
     );
   }
 
+  /**
+   * It adds a provider to the list of providers that will be exported by the module
+   * @param {InstanceToken} token - InstanceToken
+   */
   public addExportedProvider(
     provider: Provider | string | symbol | DynamicModule,
   ) {

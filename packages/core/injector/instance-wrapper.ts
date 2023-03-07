@@ -113,6 +113,13 @@ export class InstanceWrapper<T = any> {
     return this.scope === Scope.TRANSIENT;
   }
 
+  /**
+   * If the scope is transient, then we get the instance by inquirerId, otherwise we get the instance
+   * by contextId
+   * @param {ContextId} contextId - The context id of the instance you want to get.
+   * @param {string} [inquirerId] - The inquirerId is the unique identifier of the inquirer.
+   * @returns The instance of the class that is being injected.
+   */
   public getInstanceByContextId(
     contextId: ContextId,
     inquirerId?: string,
@@ -425,6 +432,11 @@ export class InstanceWrapper<T = any> {
     return isNil(this.inject) && this.metatype && this.metatype.prototype;
   }
 
+  /**
+   * It takes a partial object of the InstanceWrapper and InstancePerContext interfaces and assigns the
+   * properties of the partial object to the current InstanceWrapper object
+   * @param metadata - Partial<InstanceWrapper<T>> & Partial<InstancePerContext<T>>
+   */
   private initialize(
     metadata: Partial<InstanceWrapper<T>> & Partial<InstancePerContext<T>>,
   ) {

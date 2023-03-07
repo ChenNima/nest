@@ -81,6 +81,15 @@ export class Injector {
 
   constructor(private readonly options?: { preview: boolean }) {}
 
+  /**
+   * It takes a token, a collection of tokens, and a contextId, and if the token exists in the
+   * collection, it creates a prototype of the instance associated with the token, and replaces the
+   * token in the collection with the new prototype
+   * @param  - `token` is the token of the instance to be loaded.
+   * @param collection - Map<InstanceToken, InstanceWrapper<T>>
+   * @param contextId - The contextId is the unique identifier for the context.
+   * @returns A new InstanceWrapper with the target and instance
+   */
   public loadPrototype<T>(
     { token }: InstanceWrapper<T>,
     collection: Map<InstanceToken, InstanceWrapper<T>>,
@@ -102,12 +111,21 @@ export class Injector {
 
   /**
    * It takes a wrapper, a collection, a moduleRef, a contextId, and an inquirer, and returns a promise
+<<<<<<< Updated upstream
    * that resolves when the wrapper is loaded
    * @param wrapper - InstanceWrapper<T>
    * @param collection - Map<InstanceToken, InstanceWrapper>
    * @param {Module} moduleRef - The module that the instance belongs to.
    * @param contextId - The contextId is the unique identifier for the current context.
    * @param {InstanceWrapper} [inquirer] - The inquirer is the class that is requesting the instance.
+=======
+   * @param wrapper - InstanceWrapper<T>
+   * @param collection - Map<InstanceToken, InstanceWrapper>
+   * @param {Module} moduleRef - The module that the instance belongs to.
+   * @param contextId - The contextId is the unique identifier for the context.
+   * @param {InstanceWrapper} [inquirer] - The inquirer is the instance that is requesting the instance
+   * to be loaded.
+>>>>>>> Stashed changes
    * @returns A promise that resolves when the instance is loaded.
    */
   public async loadInstance<T>(
@@ -259,6 +277,19 @@ export class Injector {
     return done;
   }
 
+  /**
+   * It resolves the dependencies of a class constructor and calls the callback function with the
+   * resolved dependencies as arguments
+   * @param wrapper - InstanceWrapper<T>
+   * @param {Module} moduleRef - The module reference
+   * @param {InjectorDependency[]} inject - InjectorDependency[]
+   * @param callback - (args: unknown[]) => void | Promise<void>
+   * @param contextId - The contextId is the unique identifier for the context in which the instance is
+   * being resolved.
+   * @param {InstanceWrapper} [inquirer] - The inquirer is the class that is being resolved.
+   * @param {InstanceWrapper} [parentInquirer] - The parent inquirer is the inquirer that is being
+   * injected into the current inquirer.
+   */
   public async resolveConstructorParams<T>(
     wrapper: InstanceWrapper<T>,
     moduleRef: Module,
@@ -335,6 +366,13 @@ export class Injector {
     ];
   }
 
+  /**
+   * It takes an instance wrapper and returns an array of dependencies and an array of optional
+   * dependencies
+   * @param wrapper - InstanceWrapper<T>
+   * @returns An array of two elements. The first element is an array of InjectionToken. The second
+   * element is an array of numbers.
+   */
   public getFactoryProviderDependencies<T>(
     wrapper: InstanceWrapper<T>,
   ): [InjectorDependency[], number[]] {
@@ -502,6 +540,27 @@ export class Injector {
     return instanceWrapper;
   }
 
+  /**
+   * It looks up a component in the current module, and if it doesn't find it, it looks up the
+   * component in the parent module
+   * @param providers - Map<Function | string | symbol, InstanceWrapper>
+   * @param {Module} moduleRef - The current module
+   * @param {InjectorDependencyContext} dependencyContext - InjectorDependencyContext
+   * @param wrapper - InstanceWrapper<T>
+   * @param contextId - The contextId is the id of the module that is currently being resolved.
+   * @param {InstanceWrapper} [inquirer] - The inquirer is the component that is requesting the
+   * dependency.
+   * @param {symbol | string | number} [keyOrIndex] - The key or index of the dependency in the parent
+   * class.
+   * @returns return this.lookupComponentInParentModules(
+   *     dependencyContext,
+   *     moduleRef,
+   *     wrapper,
+   *     contextId,
+   *     inquirer,
+   *     keyOrIndex,
+   *   );
+   */
   public async lookupComponent<T = any>(
     providers: Map<Function | string | symbol, InstanceWrapper>,
     moduleRef: Module,
@@ -563,6 +622,21 @@ export class Injector {
     return instanceWrapper;
   }
 
+  /**
+   * > This function is used to find a component in the imports of a module
+   * @param {Module} moduleRef - The module that is currently being looked at.
+   * @param {InstanceToken} name - The name of the dependency we're looking for
+   * @param {InstanceWrapper} wrapper - InstanceWrapper - The wrapper of the instance that is being
+   * injected.
+   * @param {any[]} moduleRegistry - any[] = []
+   * @param contextId - The context id of the module that is currently being resolved.
+   * @param {InstanceWrapper} [inquirer] - The inquirer is the parent of the current instance.
+   * @param {symbol | string | number} [keyOrIndex] - The key or index of the dependency in the parent
+   * class.
+   * @param {boolean} [isTraversing] - This is a boolean that is set to true when the
+   * lookupComponentInImports method is called recursively.
+   * @returns The instanceWrapperRef
+   */
   public async lookupComponentInImports(
     moduleRef: Module,
     name: InstanceToken,
@@ -630,6 +704,16 @@ export class Injector {
     return instanceWrapperRef;
   }
 
+  /**
+   * It resolves the properties of a class
+   * @param wrapper - InstanceWrapper<T>
+   * @param {Module} moduleRef - The module reference
+   * @param {InjectorDependency[]} [inject] - InjectorDependency[]
+   * @param contextId - The contextId is the unique identifier for the current context.
+   * @param {InstanceWrapper} [inquirer] - The inquirer is the class that is being resolved.
+   * @param {InstanceWrapper} [parentInquirer] - The inquirer instance that is being resolved.
+   * @returns An array of PropertyDependency objects.
+   */
   public async resolveProperties<T>(
     wrapper: InstanceWrapper<T>,
     moduleRef: Module,
@@ -712,6 +796,16 @@ export class Injector {
       .forEach(item => (instance[item.key] = item.instance));
   }
 
+  /**
+   * It creates an instance of the class and stores it in the `instanceHost` object
+   * @param {any[]} instances - any[]
+   * @param {InstanceWrapper} wrapper - InstanceWrapper - The wrapper of the class we're trying to
+   * instantiate
+   * @param {InstanceWrapper} targetMetatype - The class that is being instantiated.
+   * @param contextId - The context id of the module.
+   * @param {InstanceWrapper} [inquirer] - The inquirer is the class that is requesting the instance.
+   * @returns The instance of the class.
+   */
   public async instantiateClass<T = any>(
     instances: any[],
     wrapper: InstanceWrapper,

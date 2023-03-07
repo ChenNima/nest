@@ -195,6 +195,14 @@ export class NestContainer {
     return moduleRef.addProvider(provider, enhancerSubtype) as Function;
   }
 
+  /**
+   * It adds an injectable to a module
+   * @param {Provider} injectable - The injectable to be added.
+   * @param {string} token - The token of the module that the injectable is being added to.
+   * @param {EnhancerSubtype} enhancerSubtype - EnhancerSubtype
+   * @param [host] - The class that is being decorated with the injectable.
+   * @returns The moduleRef.addInjectable() method returns a Provider.
+   */
   public addInjectable(
     injectable: Provider,
     token: string,
